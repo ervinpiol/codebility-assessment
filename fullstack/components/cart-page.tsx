@@ -10,7 +10,8 @@ import { useCartStore } from "@/app/store/cart";
 import { toast } from "sonner";
 
 export function CartPage() {
-  const { items, fetchCart, remove, updateQuantity } = useCartStore();
+  const { items, itemCount, fetchCart, remove, updateQuantity } =
+    useCartStore();
 
   useEffect(() => {
     fetchCart();
@@ -55,109 +56,118 @@ export function CartPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto p-4">
-      <div className="lg:col-span-2 space-y-4">
-        <h1 className="text-3xl font-bold">Shopping Cart</h1>
+    <div className="max-w-6xl mx-auto p-4">
+      <h1 className="text-3xl font-bold">Shopping Cart</h1>
 
-        {items.map((item) => (
-          <Card key={item.id} className="p-4 flex gap-4">
-            {/* Product Image */}
-            <div className="relative w-24 h-24 shrink-0 bg-muted rounded-lg overflow-hidden">
-              <Image
-                src={item.image || "/placeholder.svg"}
-                alt={`Image of ${item.name || "product"}`}
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            {/* Info */}
-            <div className="flex-1 flex flex-col justify-between">
-              <div>
-                <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-lg font-bold text-primary">${item.price}</p>
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-4">
+          {items.map((item) => (
+            <Card key={item.id} className="p-4 flex gap-4">
+              {/* Product Image */}
+              <div className="relative w-24 h-24 shrink-0 bg-muted rounded-lg overflow-hidden">
+                <Image
+                  src={item.image || "/placeholder.svg"}
+                  alt={`Image of ${item.name || "product"}`}
+                  fill
+                  className="object-cover"
+                />
               </div>
 
-              <div className="flex items-center justify-between mt-2">
-                {/* Quantity */}
-                <div className="flex items-center border border-border rounded-lg">
-                  <button
-                    onClick={() =>
-                      handleUpdateQuantity(
-                        item.id,
-                        item.quantity - 1,
-                        item.name
-                      )
-                    }
-                    disabled={item.quantity <= 1}
-                    className="px-3 py-1 hover:bg-muted disabled:opacity-50"
-                  >
-                    −
-                  </button>
-                  <span className="px-4 py-1">{item.quantity}</span>
-                  <button
-                    onClick={() =>
-                      handleUpdateQuantity(
-                        item.id,
-                        item.quantity + 1,
-                        item.name
-                      )
-                    }
-                    className="px-3 py-1 hover:bg-muted"
-                  >
-                    +
-                  </button>
-                </div>
-
-                {/* Subtotal */}
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Subtotal</p>
-                  <p className="font-bold">
-                    ${(item.price * item.quantity).toFixed(2)}
+              {/* Info */}
+              <div className="flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-semibold">{item.name}</h3>
+                  <p className="text-lg font-bold text-primary">
+                    ${item.price}
                   </p>
                 </div>
 
-                {/* Remove */}
-                <button
-                  onClick={() => handleRemove(item.id, item.name)}
-                  className="text-destructive hover:bg-destructive/10 p-2 rounded"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+                <div className="flex items-center justify-between mt-2">
+                  {/* Quantity */}
+                  <div className="flex items-center border border-border rounded-lg">
+                    <Button
+                      onClick={() =>
+                        handleUpdateQuantity(
+                          item.id,
+                          item.quantity - 1,
+                          item.name
+                        )
+                      }
+                      disabled={item.quantity <= 1}
+                      className="cursor-pointer bg-transparent text-black hover:bg-muted disabled:opacity-50"
+                      size="icon"
+                    >
+                      −
+                    </Button>
+                    <span className="px-4 py-1">{item.quantity}</span>
+                    <Button
+                      onClick={() =>
+                        handleUpdateQuantity(
+                          item.id,
+                          item.quantity + 1,
+                          item.name
+                        )
+                      }
+                      className="cursor-pointer bg-transparent text-black hover:bg-muted disabled:opacity-50"
+                      size="icon"
+                    >
+                      +
+                    </Button>
+                  </div>
+
+                  {/* Subtotal */}
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Subtotal</p>
+                    <p className="font-bold">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
+
+                  {/* Remove */}
+                  <Button
+                    onClick={() => handleRemove(item.id, item.name)}
+                    size="icon"
+                    variant="destructive"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Summary */}
+        <div className="lg:col-span-1">
+          <Card className="p-6 sticky top-4 space-y-4">
+            <h2 className="text-xl font-bold">Order Summary</h2>
+
+            <div className="flex justify-between text-muted-foreground">
+              <span>Subtotal ({itemCount} items)</span>
+              <span>${subtotal.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-between text-muted-foreground">
+              <span>Shipping</span>
+              <span
+                className={shipping === 0 ? "text-primary font-medium" : ""}
+              >
+                {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+              </span>
+            </div>
+
+            <div className="border-t pt-3">
+              <div className="flex justify-between font-bold">
+                <span>Total</span>
+                <span className="text-xl">${finalTotal.toFixed(2)}</span>
               </div>
             </div>
+
+            <Button className="w-full" size="lg">
+              Proceed to Checkout
+            </Button>
           </Card>
-        ))}
-      </div>
-
-      {/* Summary */}
-      <div className="lg:col-span-1">
-        <Card className="p-6 sticky top-4 space-y-4">
-          <h2 className="text-xl font-bold">Order Summary</h2>
-
-          <div className="flex justify-between text-muted-foreground">
-            <span>Subtotal ({items.length} items)</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-
-          <div className="flex justify-between text-muted-foreground">
-            <span>Shipping</span>
-            <span className={shipping === 0 ? "text-primary font-medium" : ""}>
-              {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
-            </span>
-          </div>
-
-          <div className="border-t pt-3">
-            <div className="flex justify-between font-bold">
-              <span>Total</span>
-              <span className="text-xl">${finalTotal.toFixed(2)}</span>
-            </div>
-          </div>
-
-          <Button className="w-full" size="lg">
-            Proceed to Checkout
-          </Button>
-        </Card>
+        </div>
       </div>
     </div>
   );

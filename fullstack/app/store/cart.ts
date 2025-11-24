@@ -15,12 +15,19 @@ interface CartState {
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isLoading: false,
+  itemCount: 0,
+  total: 0,
 
   fetchCart: async () => {
     set({ isLoading: true });
     const res = await fetch("/api/cart");
-    const cart = await res.json();
-    set({ items: cart, isLoading: false });
+    const cart: CartItem[] = await res.json();
+    set({
+      items: cart,
+      isLoading: false,
+      itemCount: cart.reduce((sum, i) => sum + i.quantity, 0),
+      total: cart.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    });
   },
 
   add: async (id, qty) => {
@@ -29,7 +36,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, quantity: qty }),
     });
-    get().fetchCart(); // refresh cart after adding
+    await get().fetchCart();
   },
 
   remove: async (id) => {
@@ -38,7 +45,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
-    get().fetchCart(); // refresh cart after removal
+    await get().fetchCart();
   },
 
   updateQuantity: async (id: string, qty: number) => {
@@ -50,17 +57,9 @@ export const useCartStore = create<CartState>((set, get) => ({
     await fetch("/api/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, quantity: qty, replace: true }), // ← important
+      body: JSON.stringify({ id, quantity: qty, replace: true }),
     });
 
-    get().fetchCart();
-  },
-
-  get itemCount() {
-    return get().items.reduce((sum, i) => sum + i.quantity, 0);
-  },
-
-  get total() {
-    return get().items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    await get().fetchCart();
   },
 }));

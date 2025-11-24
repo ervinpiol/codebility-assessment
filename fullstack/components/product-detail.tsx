@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Star, Heart, ShoppingCart, Check } from "lucide-react";
 import type { Product } from "@/lib/products";
 import { useCartStore } from "@/app/store/cart";
@@ -24,21 +24,23 @@ function QuantitySelector({
 }) {
   return (
     <div className="flex items-center border border-border rounded-lg">
-      <button
+      <Button
         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-        className="px-4 py-2 hover:bg-muted transition-colors disabled:opacity-50"
+        className="cursor-pointer bg-transparent text-black hover:bg-muted disabled:opacity-50"
         disabled={quantity <= 1}
+        size="icon"
       >
         −
-      </button>
-      <span className="px-6 py-2 font-medium">{quantity}</span>
-      <button
+      </Button>
+      <span className="px-4 font-medium">{quantity}</span>
+      <Button
         onClick={() => setQuantity(Math.min(max, quantity + 1))}
-        className="px-4 py-2 hover:bg-muted transition-colors disabled:opacity-50"
+        className="cursor-pointer bg-transparent text-black hover:bg-muted disabled:opacity-50"
         disabled={quantity >= max}
+        size="icon"
       >
         +
-      </button>
+      </Button>
     </div>
   );
 }
@@ -178,40 +180,41 @@ export function ProductDetail({ productId }: ProductDetailProps) {
           <Button
             onClick={handleAddToCart}
             disabled={product.stock === 0}
-            className="w-full sm:w-auto py-4 text-lg font-semibold"
-            size="lg"
+            className="w-full sm:w-auto py-4 font-semibold"
           >
             {added ? (
               <>
-                <Check className="w-5 h-5 mr-2" /> Added to Cart
+                <Check size={16} /> Added to Cart
               </>
             ) : (
               <>
-                <ShoppingCart className="w-5 h-5 mr-2" /> Add to Cart
+                <ShoppingCart size={16} /> Add to Cart
               </>
             )}
           </Button>
         </div>
 
         {/* Product Features */}
-        <Card className="p-4 bg-muted border-0">
-          <h3 className="font-semibold text-foreground mb-3">
-            Product Features
-          </h3>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-primary" /> Free shipping on orders
-              over $50
-            </li>
-            <li className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-primary" /> 30-day money-back
-              guarantee
-            </li>
-            <li className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-primary" /> 1-year warranty
-              included
-            </li>
-          </ul>
+        <Card className="bg-muted border-0">
+          <CardContent>
+            <h3 className="font-semibold text-foreground mb-3">
+              Product Features
+            </h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-primary" /> Free shipping on
+                orders over $50
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-primary" /> 30-day money-back
+                guarantee
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-primary" /> 1-year warranty
+                included
+              </li>
+            </ul>
+          </CardContent>
         </Card>
       </div>
     </div>
