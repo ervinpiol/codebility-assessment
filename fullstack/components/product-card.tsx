@@ -25,9 +25,9 @@ export function ProductCard({
   return (
     <Card
       onClick={onClick}
-      className="group overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:scale-105"
+      className="group overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:scale-105 pt-0 gap-0"
     >
-      <div className="relative w-full aspect-square bg-muted overflow-hidden">
+      <div className="relative w-full h-full aspect-square bg-muted overflow-hidden border-b">
         <Image
           src={image || "/placeholder.svg"}
           alt={name}
@@ -35,7 +35,7 @@ export function ProductCard({
           className="object-cover group-hover:scale-110 transition-transform duration-300"
         />
       </div>
-      <div className="p-4 space-y-3">
+      <div className="p-4 pt-6 pb-0 space-y-3">
         <h3 className="font-semibold text-foreground line-clamp-2">{name}</h3>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">

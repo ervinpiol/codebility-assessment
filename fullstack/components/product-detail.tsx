@@ -97,7 +97,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto p-4">
       {/* Product Image */}
       <div className="flex items-center justify-center bg-muted rounded-lg overflow-hidden">
-        <div className="relative w-full aspect-square">
+        <div className="relative w-full h-full aspect-square">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.name}
